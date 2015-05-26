@@ -1,0 +1,402 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="geometry">480x240</property>
+    <property name="height">200</property>
+    <property name="minsize">320|240</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">PTSync</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="Frame_1">
+        <property name="height">200</property>
+        <property name="padding">5</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+          <rows>
+            <row id="0">
+              <property name="weight">0</property>
+            </row>
+            <row id="1">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="Frame_4">
+            <property name="height">200</property>
+            <property name="padding">0 0 0 5</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">nsw</property>
+              <columns>
+                <column id="0">
+                  <property name="pad">2</property>
+                </column>
+                <column id="1">
+                  <property name="pad">2</property>
+                </column>
+                <column id="2">
+                  <property name="pad">2</property>
+                </column>
+                <column id="3">
+                  <property name="pad">2</property>
+                </column>
+                <column id="4">
+                  <property name="pad">2</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="addpl_button">
+                <property name="command">on_addplaylist_cb</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Add Playlist</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="ipady">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Separator" id="Separator_1">
+                <property name="orient">vertical</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ns</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="sync_button">
+                <property name="command">on_sync_cb</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Sync</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="ipady">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Separator" id="Separator_2">
+                <property name="orient">vertical</property>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ns</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="prefs_button">
+                <property name="command">on_preferences_cb</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Preferences</property>
+                <layout>
+                  <property name="column">4</property>
+                  <property name="ipady">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Panedwindow" id="Panedwindow_1">
+            <property name="height">200</property>
+            <property name="orient">horizontal</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="ttk.Panedwindow.Pane" id="Pane_1">
+                <property name="weight">2</property>
+                <child>
+                  <object class="ttk.Frame" id="Frame_2">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                      <property name="sticky">nsew</property>
+                      <columns>
+                        <column id="0">
+                          <property name="weight">1</property>
+                        </column>
+                      </columns>
+                      <rows>
+                        <row id="0">
+                          <property name="weight">1</property>
+                        </row>
+                      </rows>
+                    </layout>
+                    <child>
+                      <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
+                        <property name="scrolltype">both</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                          <property name="sticky">nsew</property>
+                        </layout>
+                        <child>
+                          <object class="pygubu.builder.widgets.editabletreeview" id="pltree">
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="propagate">True</property>
+                              <property name="row">1</property>
+                            </layout>
+                            <child>
+                              <object class="ttk.Treeview.Column" id="plistname">
+                                <property name="column_anchor">w</property>
+                                <property name="heading_anchor">w</property>
+                                <property name="minwidth">20</property>
+                                <property name="stretch">true</property>
+                                <property name="text" translatable="yes">Playlist</property>
+                                <property name="tree_column">true</property>
+                                <property name="visible">true</property>
+                                <property name="width">200</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Treeview.Column" id="videoname">
+                                <property name="column_anchor">w</property>
+                                <property name="heading_anchor">w</property>
+                                <property name="minwidth">20</property>
+                                <property name="stretch">true</property>
+                                <property name="text" translatable="yes">video name</property>
+                                <property name="tree_column">false</property>
+                                <property name="visible">true</property>
+                                <property name="width">200</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Panedwindow.Pane" id="Pane_2">
+                <property name="weight">1</property>
+                <child>
+                  <object class="ttk.Frame" id="Frame_3">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                      <property name="sticky">nsew</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="Label_1">
+                        <property name="text" translatable="yes">Panel 2</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="pygubu.builder.widgets.dialog" id="preferences">
+    <property name="height">100</property>
+    <property name="modal">true</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">ptsync preferences</property>
+    <property name="width">200</property>
+    <bind add="" handler="on_preferences_close" sequence="&lt;&lt;DialogClose&gt;&gt;" />
+    <child>
+      <object class="ttk.Frame" id="Frame_5">
+        <property name="height">200</property>
+        <property name="padding">5</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <columns>
+            <column id="0">
+              <property name="weight">0</property>
+            </column>
+            <column id="1">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="Label_2">
+            <property name="text" translatable="yes">Local playlist dir:</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.builder.widgets.pathchooserinput" id="playlistdir">
+            <property name="type">directory</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Frame_6">
+            <property name="height">200</property>
+            <property name="padding">0 5 0 0</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="columnspan">2</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="rowspan">1</property>
+              <property name="sticky">e</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="Button_1">
+                <property name="command">on_preferences_close</property>
+                <property name="text" translatable="yes">Close</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="pygubu.builder.widgets.dialog" id="addplaylist">
+    <property name="height">100</property>
+    <property name="modal">true</property>
+    <property name="title" translatable="yes">Add playlist</property>
+    <property name="width">200</property>
+    <bind add="" handler="on_addplaylist_cancel" sequence="&lt;&lt;DialogClose&gt;&gt;" />
+    <child>
+      <object class="ttk.Frame" id="Frame_7">
+        <property name="height">200</property>
+        <property name="padding">5</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="Label_3">
+            <property name="text" translatable="yes">Playlist URL:</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="Entry_1">
+            <property name="textvariable">string:playlisturl</property>
+            <property name="width">50</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Frame_8">
+            <property name="height">200</property>
+            <property name="padding">0 5 0 0</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="columnspan">2</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="rowspan">1</property>
+              <property name="sticky">e</property>
+              <columns>
+                <column id="0">
+                  <property name="pad">10</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="Button_2">
+                <property name="command">on_addplaylist_cancel</property>
+                <property name="text" translatable="yes">Cancel</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Button_3">
+                <property name="command">on_addplaylist_ok</property>
+                <property name="text" translatable="yes">Ok</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
