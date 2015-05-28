@@ -34,6 +34,12 @@ class AppConfig(object):
         if not os.path.exists(self.config_file):
             with open(self.config_file, 'w') as configfile:
                 self.config.write(self.config_file)
+    
+    def download_dir(self):
+        path = self.config.get('DEFAULT', 'playlistdir')
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
 
 appconf = AppConfig()

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
   <object class="tk.Toplevel" id="mainwindow">
-    <property name="geometry">480x240</property>
+    <property name="geometry">640x320</property>
     <property name="height">200</property>
     <property name="minsize">320|240</property>
     <property name="resizable">both</property>
@@ -10,7 +10,7 @@
     <child>
       <object class="ttk.Frame" id="Frame_1">
         <property name="height">200</property>
-        <property name="padding">5</property>
+        <property name="padding">2</property>
         <property name="width">200</property>
         <layout>
           <property name="column">0</property>
@@ -155,7 +155,7 @@
                 </layout>
                 <child>
                   <object class="ttk.Panedwindow.Pane" id="Pane_1">
-                    <property name="weight">2</property>
+                    <property name="weight">1</property>
                     <child>
                       <object class="ttk.Frame" id="Frame_2">
                         <property name="height">200</property>
@@ -187,6 +187,7 @@
                             </layout>
                             <child>
                               <object class="pygubu.builder.widgets.editabletreeview" id="pltree">
+                                <bind add="" handler="on_item_select" sequence="&lt;&lt;TreeviewSelect&gt;&gt;" />
                                 <layout>
                                   <property name="column">0</property>
                                   <property name="propagate">True</property>
@@ -196,12 +197,24 @@
                                   <object class="ttk.Treeview.Column" id="rootc">
                                     <property name="column_anchor">w</property>
                                     <property name="heading_anchor">w</property>
-                                    <property name="minwidth">100</property>
+                                    <property name="minwidth">200</property>
                                     <property name="stretch">true</property>
                                     <property name="text" translatable="yes">Playlist</property>
                                     <property name="tree_column">true</property>
                                     <property name="visible">true</property>
                                     <property name="width">200</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ttk.Treeview.Column" id="indisk">
+                                    <property name="column_anchor">w</property>
+                                    <property name="heading_anchor">w</property>
+                                    <property name="minwidth">20</property>
+                                    <property name="stretch">false</property>
+                                    <property name="text" translatable="yes">In disk</property>
+                                    <property name="tree_column">false</property>
+                                    <property name="visible">true</property>
+                                    <property name="width">50</property>
                                   </object>
                                 </child>
                                 <child>
@@ -212,7 +225,7 @@
                                     <property name="stretch">true</property>
                                     <property name="text" translatable="yes">Video ID</property>
                                     <property name="tree_column">false</property>
-                                    <property name="visible">true</property>
+                                    <property name="visible">false</property>
                                     <property name="width">200</property>
                                   </object>
                                 </child>
@@ -237,7 +250,7 @@
                 </child>
                 <child>
                   <object class="ttk.Panedwindow.Pane" id="Pane_2">
-                    <property name="weight">1</property>
+                    <property name="weight">3</property>
                     <child>
                       <object class="ttk.Frame" id="Frame_3">
                         <property name="height">200</property>
@@ -249,8 +262,9 @@
                           <property name="sticky">nsew</property>
                         </layout>
                         <child>
-                          <object class="ttk.Label" id="Label_1">
-                            <property name="text" translatable="yes">Panel 2</property>
+                          <object class="ttk.Label" id="lbltitle">
+                            <property name="font">TkHeadingFont</property>
+                            <property name="text" translatable="yes">Title:</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="propagate">True</property>
@@ -258,10 +272,71 @@
                             </layout>
                           </object>
                         </child>
+                        <child>
+                          <object class="ttk.Label" id="vtitle">
+                            <property name="text" translatable="yes">Video title</property>
+                            <layout>
+                              <property name="column">1</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Label" id="vthumb">
+                            <property name="text" translatable="yes">Label_6</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="columnspan">2</property>
+                              <property name="propagate">True</property>
+                              <property name="row">1</property>
+                              <property name="sticky">ew</property>
+                            </layout>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Frame_14">
+            <property name="borderwidth">1</property>
+            <property name="height">200</property>
+            <property name="padding">0 2 0 0</property>
+            <property name="relief">sunken</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">ew</property>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="Label_7">
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ew</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Sizegrip" id="Sizegrip_1">
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
               </object>
             </child>
           </object>

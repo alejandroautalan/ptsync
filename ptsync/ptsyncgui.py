@@ -4,9 +4,12 @@ import queue
 import logging
 import argparse
 import tkinter as tk
+import io
+from PIL import Image, ImageTk
 
 import pygubu
 import tasks
+from pygubu.stockimage import *
 from dialogs import *
 from database import DB
 
@@ -46,6 +49,26 @@ class PtsyncGui(object):
     def on_addplaylist_url(self, event=None):
         task = tasks.AddPlaylistTask(self, self.dlg_addplaylist.url)
         task.start()
+        
+    def on_sync_cb(self, event=None):
+        task = tasks.SyncTask(self)
+        task.start()
+        
+    def on_item_select(self, event=None):
+        tree = self.pltree
+        sel = tree.selection()
+        if sel:
+            item = sel[0]
+            if tree.tag_has('video', item):
+                img = None
+                if not StockImage.is_registered(item):
+                    video = DB.video_find(item)
+                    img  = Image.open(io.BytesIO(video['thumbdata']))
+                    img = ImageTk.PhotoImage(img)
+                    StockImage.register_created(item, img)
+                else:
+                    img = StockImage.get(item)
+                self.builder.get_object('vthumb').configure(image=img)
     
     def load_database(self):
         task = tasks.LoadDatabaseTask(self)
@@ -69,10 +92,11 @@ class PtsyncGui(object):
                 if cmd == 'add_playlist':
                     pl = kw['playlist']
                     if do_save:
-                        DB.save_playlist(pl)
+                        DB.playlist_save(pl)
                     try:
                         iid = self.pltree.insert('', tk.END, iid=pl['id'],
-                                                 text=pl['title'])
+                                                 text=pl['title'],
+                                                 tags='pl')
                         see_func = lambda: self.pltree.see(iid)
                         self.mainwindow.after_idle(see_func)
                     except Exception as e:
@@ -84,13 +108,14 @@ class PtsyncGui(object):
                     video = kw['video']
 
                     if do_save:
-                        DB.save_video(video)
+                        DB.video_save(video)
                         DB.playlist_add_video(plid, video['id'])
 
                     try:
                         iid = self.pltree.insert(plid, tk.END, iid=video['id'],
                                                  text=video['title'],
-                                                 values=(video['id'],))
+                                                 values=('F', video['id'],),
+                                                 tags='video')
                         see_func = lambda: self.pltree.see(iid)
                         self.mainwindow.after_idle(see_func)
                     except Exception as e:

@@ -1,14 +1,51 @@
+import os
 import urllib
+import urllib.request
+import urllib.error
 import http.client
 import json
 import logging
 import queue
 import threading
 
+#from pytube import YouTube
+import youtube_dl
+
 from database import DB
+from prefs import appconf
 
 
 logger = logging.getLogger(__name__)
+
+
+class SyncTask(threading.Thread):
+    def __init__(self, app):
+        threading.Thread.__init__(self)
+        self.app = app
+
+    def run(self):
+        db = DB.new_connection()
+        self.app.task_cmd('task_start', 'Downloading videos ...')
+        videos = db.video_list()
+        curdir = os.getcwd()
+        os.chdir(appconf.download_dir())
+        for v in videos:
+            video_key = v['id']
+#            yt = YouTube()
+#            yt.url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
+#            yt.filename = '{0}_{1}'.format(video_key, yt.filename)
+#            video = yt.filter('mp4')[-1]
+#            video.download(appconf.download_dir())
+            ydl_opts = {
+#                'format': 'bestaudio/best',
+                'outtmpl': '%(id)s__%(title)s.%(ext)s'
+                }
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
+                ydl.download([url])
+        os.chdir(curdir)
+        self.app.task_cmd('task_stop', 'Done.')
+
 
 class LoadDatabaseTask(threading.Thread):
     def __init__(self, app):
@@ -18,10 +55,10 @@ class LoadDatabaseTask(threading.Thread):
     def run(self):
         db = DB.new_connection()
         self.app.task_cmd('task_start', 'Loading data ...')
-        pls = db.list_playlists()
+        pls = db.playlist_list()
         for pl in pls:
             self.app.task_cmd('add_playlist', playlist=pl, save=False)
-            videos = db.list_playlist_videos(pl['id'])
+            videos = db.playlist_video_list(pl['id'])
             for video in videos:
                 self.app.task_cmd('add_video', playlist_id=pl['id'],
                                   video=video, save=False)
@@ -44,7 +81,7 @@ class AddPlaylistTask(threading.Thread):
         
         thumbnail = None
         for thumb in data['feed']['media$group']['media$thumbnail']:
-            if thumb['yt$name'] == 'mqdefault':
+            if thumb['yt$name'] == 'hqdefault':
                 thumbnail = thumb['url']
         pl = {
             'id': playlist_id,
@@ -73,7 +110,8 @@ class AddPlaylistTask(threading.Thread):
                 video = {
                     'id': yt_id,
                     'title': yt_title,
-                    'thumb': vthumb
+                    'thumb': vthumb,
+                    'thumbdata': self.fetch_thumb(vthumb)
                 }
 
                 self.app.task_cmd('add_video', playlist_id=playlist_id, video=video)
@@ -84,17 +122,26 @@ class AddPlaylistTask(threading.Thread):
                 
                 downloaded += 1
         self.app.task_cmd('task_stop', 'Done.')
+        
+    def fetch_thumb(self, url):
+        data = None
+        try:
+            r = urllib.request.urlopen(url)
+            data = r.read()
+        except urllib.error.URLError as e:
+            pass
+        return data
     
     def fetch_info(self, playlistId, start = 1, limit = 0):
-        connection = http.client.HTTPConnection('gdata.youtube.com')
+        conn = http.client.HTTPConnection('gdata.youtube.com')
         params = {
             'alt' : 'json',
             'max-results' : limit,
             'start-index' : start,
             'v' : 2
         }
-        connection.request('GET', '/feeds/api/playlists/' + str(playlistId) + '/?' + urllib.parse.urlencode(params))
-        response = connection.getresponse()
+        conn.request('GET', '/feeds/api/playlists/' + str(playlistId) + '/?' + urllib.parse.urlencode(params))
+        response = conn.getresponse()
         if response.status != 200:
             logger.error('Not a valid/public playlist.')
             logger.info('Response status: {0}'.format(response.status))

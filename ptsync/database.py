@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class Database(object):
+
     def __init__(self):
         self.dbname = dbname = 'ptsync.sqlite'
         self.dburl = dburl = os.path.join(appconf.dirs.user_data_dir, dbname)
@@ -24,13 +25,13 @@ class Database(object):
     def new_connection(cls):
         return Database()
     
-    def find_playlist(self, pid):
-        sql = "SELECT * from playlist WHERE id = ?"
+    def playlist_exists(self, pid):
+        sql = "SELECT id from playlist WHERE id = ?"
         c = self.conn.cursor()
         c.execute(sql, (pid,))
         return c.fetchone()
 
-    def save_playlist(self, data):
+    def playlist_save(self, data):
         isql = \
             """INSERT into playlist (id, title, subtitle, thumb)
             values (:id, :title, :subtitle, :thumb)"""
@@ -38,41 +39,58 @@ class Database(object):
             """UPDATE playlist set title=:title, subtitle=:subtitle,
             thumb=:thumb WHERE id=:id"""
         sql = isql
-        if self.find_playlist(data['id']):
+        if self.playlist_exists(data['id']):
             sql = usql
         c = self.conn.cursor()
         c.execute(sql, data)
         self.conn.commit()
         
-    def find_video(self, vid):
+    def video_exists(self, vid):
+        sql = "SELECT id from video WHERE id = ?"
+        c = self.conn.cursor()
+        c.execute(sql, (vid,))
+        return c.fetchone()
+    
+    def video_find(self, vid):
         sql = "SELECT * from video WHERE id = ?"
         c = self.conn.cursor()
         c.execute(sql, (vid,))
         return c.fetchone()
         
-    def save_video(self, data):
+    def video_save(self, data):
+#        field = 'thumbdata'
+#        if field in data:
+#            data[field] = buffer(data[field])
+
         isql = \
-            """INSERT into video (id, title, thumb)
-            values (:id, :title, :thumb)"""
+            """INSERT into video (id, title, thumb, thumbdata)
+            values (:id, :title, :thumb, :thumbdata)"""
         usql = \
-            """UPDATE playlist set title=:title, thumb=:thumb WHERE id=:id"""
+            """UPDATE playlist
+            SET title=:title, thumb=:thumb, thumbdata=:thumbdata WHERE id=:id"""
         sql = isql
-        if self.find_video(data['id']):
+        if self.video_exists(data['id']):
             sql = usql
         c = self.conn.cursor()
         c.execute(sql, data)
         self.conn.commit()
+        
+    def video_list(self):
+        sql = "SELECT id, title, thumb FROM video"
+        c = self.conn.cursor()
+        c.execute(sql)
+        return c.fetchall()
 
-    def list_playlists(self):
-        sql = "SELECT * FROM playlist"
+    def playlist_list(self):
+        sql = "SELECT id, title, subtitle, thumb FROM playlist"
         c = self.conn.cursor()
         c.execute(sql)
         return c.fetchall()
     
-    def list_playlist_videos(self, plid):
+    def playlist_video_list(self, plid):
         sql = \
             """
-            SELECT v.* FROM video v
+            SELECT v.id, v.title, v.thumb FROM video v
                join playlist_video plv ON v.id = plv.video_id
                where plv.playlist_id = ?"""
         c = self.conn.cursor()
@@ -102,12 +120,14 @@ class Database(object):
                 id       VARCHAR( 128 )  PRIMARY KEY,
                 title    VARCHAR( 128 ),
                 subtitle VARCHAR( 128 ),
-                thumb    VARCHAR( 128 ) 
+                thumb    VARCHAR( 128 ),
+                thumbdata BLOB
             );""",
             """CREATE TABLE video ( 
                 id    VARCHAR( 128 )  PRIMARY KEY,
                 title VARCHAR( 128 ),
-                thumb VARCHAR( 128 ) 
+                thumb VARCHAR( 128 ),
+                thumbdata BLOB 
             );""",
             """CREATE TABLE playlist_video ( 
                 playlist_id VARCHAR( 128 )  REFERENCES playlist ( id ) ON DELETE CASCADE,
