@@ -22,30 +22,81 @@ class SyncTask(threading.Thread):
     def __init__(self, app):
         threading.Thread.__init__(self)
         self.app = app
+        self.videos_dir = os.path.join(appconf.download_dir(), 'video')
+        self.audio_dir = os.path.join(appconf.download_dir(), 'audio')
 
     def run(self):
         db = DB.new_connection()
-        self.app.task_cmd('task_start', 'Downloading videos ...')
+        self.app.task_cmd('task_start', message='Downloading videos ...')
         videos = db.video_list()
         curdir = os.getcwd()
-        os.chdir(appconf.download_dir())
         for v in videos:
-            video_key = v['id']
-#            yt = YouTube()
-#            yt.url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
-#            yt.filename = '{0}_{1}'.format(video_key, yt.filename)
-#            video = yt.filter('mp4')[-1]
-#            video.download(appconf.download_dir())
-            ydl_opts = {
-#                'format': 'bestaudio/best',
-                'outtmpl': '%(id)s__%(title)s.%(ext)s'
-                }
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
-                ydl.download([url])
+            if self.app.task_cancel.is_set():
+                self.app.task_cmd('task_stop', message='Canceled.')
+                self.app.task_cancel.clear()
+                return
+            
+            # Video download
+            try:
+                if appconf.is_video_download_active():
+                    self.download_video(v)
+                else:
+                    logger.info('Video download inactive.')
+            except youtube_dl.utils.DownloadError as e:
+                logger.error(str(e))
+            # Audio download
+            try:
+                if appconf.is_audio_download_active():
+                    self.download_audio(v)
+                else:
+                    logger.info('Audio download inactive.')
+            except youtube_dl.utils.DownloadError as e:
+                logger.error(str(e))
         os.chdir(curdir)
-        self.app.task_cmd('task_stop', 'Done.')
+        self.app.task_cmd('task_stop', message='Done.')
 
+    def download_video(self, video):
+        video_key = video['id']
+        if self.file_exists(video_key, self.videos_dir):
+            msg = 'Video file for {0} already exists'.format(video_key)
+            logger.info(msg)
+            return
+        os.chdir(self.videos_dir)
+        ydl_opts = {
+            'format': appconf.video_format(),
+            'outtmpl': '%(id)s__%(title)s.%(ext)s'
+            }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
+            self.app.task_cmd('downloading_video', name=video['title'])
+            ydl.download([url])
+    
+    def download_audio(self, video):
+        video_key = video['id']
+        if self.file_exists(video_key, self.audio_dir):
+            msg = 'Audio file for {0} already exists'.format(video_key)
+            logger.info(msg)
+            return
+
+        os.chdir(self.audio_dir)
+        ydl_opts = {
+            'format': appconf.audio_format(),
+#                    'audioquality': 6,
+            'outtmpl': '%(id)s__%(title)s.%(ext)s'
+            }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
+            self.app.task_cmd('downloading_video', name=video['title'])
+            ydl.download([url])
+    
+    def file_exists(self, key, path):
+        exists = False
+        files = os.listdir(path)
+        for f in files:
+            if f.startswith(key):
+                exists = True
+        return exists
+    
 
 class LoadDatabaseTask(threading.Thread):
     def __init__(self, app):
@@ -95,6 +146,12 @@ class AddPlaylistTask(threading.Thread):
         self.app.task_cmd('add_playlist', playlist=pl)
         downloaded = 1
         while downloaded <= total_videos:
+
+            if self.app.task_cancel.is_set():
+                self.app.task_cmd('task_stop', 'Canceled.')
+                self.app.task_cancel.clear()
+                return
+
             data = self.fetch_info(playlist_id, downloaded, 10)
             entries = data['feed']['entry']
             for entry in entries:
@@ -104,7 +161,7 @@ class AddPlaylistTask(threading.Thread):
                 
                 vthumb = None
                 for thumb in group['media$thumbnail']:
-                    if thumb['yt$name'] == 'mqdefault':
+                    if thumb['yt$name'] == 'hqdefault':
                         vthumb = thumb['url']
 
                 video = {
@@ -115,11 +172,6 @@ class AddPlaylistTask(threading.Thread):
                 }
 
                 self.app.task_cmd('add_video', playlist_id=playlist_id, video=video)
-                
-#                msg = '{0}(IDX)){1}'.format(yt_id, yt_title)
-#                logger.debug(msg)
-#                logger.debug('index {0}'.format(downloaded))
-                
                 downloaded += 1
         self.app.task_cmd('task_stop', 'Done.')
         
