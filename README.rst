@@ -11,7 +11,7 @@ ptsync
 
 Personal tube sync app
 
-* Free software: BSD license
+* Free software: GPLv3 license
 * Documentation: https://ptsync.readthedocs.org.
 
 Features
