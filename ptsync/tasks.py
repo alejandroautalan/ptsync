@@ -105,7 +105,7 @@ class LoadDatabaseTask(threading.Thread):
 
     def run(self):
         db = DB.new_connection()
-        self.app.task_cmd('task_start', 'Loading data ...')
+        self.app.task_cmd('task_start', message='Loading data ...')
         pls = db.playlist_list()
         for pl in pls:
             self.app.task_cmd('add_playlist', playlist=pl, save=False)
@@ -113,7 +113,7 @@ class LoadDatabaseTask(threading.Thread):
             for video in videos:
                 self.app.task_cmd('add_video', playlist_id=pl['id'],
                                   video=video, save=False)
-        self.app.task_cmd('task_stop', 'Done.')
+        self.app.task_cmd('task_stop', message='Done.')
 
 
 class AddPlaylistTask(threading.Thread):
