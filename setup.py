@@ -15,7 +15,9 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
 requirements = [
-    # TODO: put package requirements here
+    'youtube-dl',
+    'appdirs>=1.4',
+    'pygubu>=0.9.7.4
 ]
 
 test_requirements = [
@@ -37,7 +39,7 @@ setup(
                  'ptsync'},
     include_package_data=True,
     install_requires=requirements,
-    license="BSD",
+    license="GPL-3",
     zip_safe=False,
     keywords='ptsync',
     classifiers=[
@@ -45,9 +47,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
