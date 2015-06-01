@@ -18,3 +18,8 @@ Features
 --------
 
 * TODO
+
+Credits
+-------
+
+Icons are from Tango Icon Set (http://creativecommons.org/licenses/by-sa/2.5/legalcode)

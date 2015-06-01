@@ -16,6 +16,7 @@ from database import DB
 
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
+IMGS_DIR = os.path.join(APP_DIR, 'imgs')
 logger = logging.getLogger(__name__)
 
 
@@ -25,6 +26,7 @@ class PtsyncGui(object):
         #
         self.builder = b = pygubu.Builder()
         b.add_from_file(os.path.join(APP_DIR, 'ptsync.ui'))
+        b.add_resource_path(IMGS_DIR)
         self.mainwindow = mainwindow = b.get_object('mainwindow')
         self.pltree = b.get_object('pltree')
         self.taskdialog = b.get_object('taskdialog', mainwindow)
@@ -42,11 +44,16 @@ class PtsyncGui(object):
         self.mainwindow.after_idle(self.load_database)
         self.process_queue()
     
-    def on_preferences_cb(self, event=None):
-        """Show preferences dialog."""
-        if self.dlg_preferences is None:
-            self.dlg_preferences = PreferencesDialog(self)
-        self.dlg_preferences.dialog.run()
+    def on_mainmenu_cb(self, itemid):
+        if itemid == 'mprefs':
+            # Show preferences dialog.
+            if self.dlg_preferences is None:
+                self.dlg_preferences = PreferencesDialog(self)
+            self.dlg_preferences.dialog.run()
+        if itemid == 'mgenplaylist':
+            logger.info('mgenplaylist')
+            task = tasks.GeneratePlaylistsTask(self)
+            task.start()
     
     def on_addplaylist_cb(self, event=None):
         """Show add playlist dialog."""
@@ -61,7 +68,7 @@ class PtsyncGui(object):
         task.start()
         
     def on_sync_cb(self, event=None):
-        """Starts synk task."""
+        """Starts sync task."""
         task = tasks.SyncTask(self)
         task.start()
         

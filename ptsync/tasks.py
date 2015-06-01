@@ -13,6 +13,7 @@ import youtube_dl
 
 from database import DB
 from prefs import appconf
+from playlistfile import PlaylistFile
 
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ class SyncTask(threading.Thread):
                 self.app.task_cmd('task_stop', message='Canceled.')
                 self.app.task_cancel.clear()
                 return
-            
+
             # Video download
             try:
                 if appconf.is_video_download_active():
@@ -70,7 +71,7 @@ class SyncTask(threading.Thread):
             url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
             self.app.task_cmd('downloading_video', name=video['title'])
             ydl.download([url])
-    
+
     def download_audio(self, video):
         video_key = video['id']
         if self.file_exists(video_key, self.audio_dir):
@@ -88,7 +89,7 @@ class SyncTask(threading.Thread):
             url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
             self.app.task_cmd('downloading_video', name=video['title'])
             ydl.download([url])
-    
+
     def file_exists(self, key, path):
         exists = False
         files = os.listdir(path)
@@ -96,7 +97,7 @@ class SyncTask(threading.Thread):
             if f.startswith(key):
                 exists = True
         return exists
-    
+
 
 class LoadDatabaseTask(threading.Thread):
     def __init__(self, app):
@@ -123,13 +124,13 @@ class AddPlaylistTask(threading.Thread):
         self.playlist_id = plid
 
     def run(self):
-        self.app.task_cmd('task_start', 'Getting playlist information ...')
+        self.app.task_cmd('task_start', message='Getting playlist information ...')
         logger.info('Getting playlist information ... ')
-        
+
         playlist_id = self.playlist_id
         data = self.fetch_info(playlist_id)
         total_videos = int(data['feed']['openSearch$totalResults']['$t'])
-        
+
         thumbnail = None
         for thumb in data['feed']['media$group']['media$thumbnail']:
             if thumb['yt$name'] == 'hqdefault':
@@ -142,7 +143,7 @@ class AddPlaylistTask(threading.Thread):
             'thumb': thumbnail
             }
         logger.info('Total videos: ' + str(total_videos))
-        
+
         self.app.task_cmd('add_playlist', playlist=pl)
         downloaded = 1
         while downloaded <= total_videos:
@@ -158,7 +159,7 @@ class AddPlaylistTask(threading.Thread):
                 group = entry['media$group'];
                 yt_id = group['yt$videoid']['$t']
                 yt_title = group['media$title']['$t']
-                
+
                 vthumb = None
                 for thumb in group['media$thumbnail']:
                     if thumb['yt$name'] == 'hqdefault':
@@ -173,8 +174,8 @@ class AddPlaylistTask(threading.Thread):
 
                 self.app.task_cmd('add_video', playlist_id=playlist_id, video=video)
                 downloaded += 1
-        self.app.task_cmd('task_stop', 'Done.')
-        
+        self.app.task_cmd('task_stop', message='Done.')
+
     def fetch_thumb(self, url):
         data = None
         try:
@@ -183,7 +184,7 @@ class AddPlaylistTask(threading.Thread):
         except urllib.error.URLError as e:
             pass
         return data
-    
+
     def fetch_info(self, playlistId, start = 1, limit = 0):
         conn = http.client.HTTPConnection('gdata.youtube.com')
         params = {
@@ -200,4 +201,53 @@ class AddPlaylistTask(threading.Thread):
         data = response.readall()
         data = json.loads(data.decode('utf-8'))
         return data
+
+
+class GeneratePlaylistsTask(threading.Thread):
+    def __init__(self, app):
+        threading.Thread.__init__(self)
+        self.app = app
+
+    def run(self):
+        logger.debug('Starting task GeneratePlaylists')
+        self.app.task_cmd('task_start', message='Generating playlists ...')
+        playlist_dir = appconf.playlists_dir()
+        videodirlist = os.listdir(os.path.join(playlist_dir, 'video'))
+        audiodirlist = os.listdir(os.path.join(playlist_dir, 'audio'))
+        
+        db = DB.new_connection()
+        pls = db.playlist_list()
+        for pl in pls:
+            audiolist = []
+            videolist = []
+            videos = db.playlist_video_list(pl['id'])
+            for video in videos:
+                filename = self.get_filename(video['id'], videodirlist)
+                if filename:
+                    videolist.append(os.path.join('video', filename))
+                
+                filename = self.get_filename(video['id'], audiodirlist)
+                if filename:
+                    audiolist.append(os.path.join('audio', filename))
+
+            videopl = '{0}_video.m3u'.format(pl['title'])
+            audiopl = '{0}_audio.m3u'.format(pl['title'])
+            vpath = os.path.join(playlist_dir, videopl)
+            apath = os.path.join(playlist_dir, audiopl)
+            pl = PlaylistFile(videolist)
+            pl.save(vpath)
+            
+            pl = PlaylistFile(audiolist)
+            pl.save(apath)
+        
+        logger.debug('Done task GeneratePlaylists')
+        self.app.task_cmd('task_stop', message='Done.')
+        
+    def get_filename(self, vid, dirlist):
+        found = None
+        for f in dirlist:
+            if f.startswith(vid):
+                found = f
+                break
+        return found
 
