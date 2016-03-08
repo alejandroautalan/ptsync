@@ -4,6 +4,7 @@ import queue
 import logging
 import argparse
 import tkinter as tk
+import tkinter.messagebox
 import io
 import threading
 from PIL import Image, ImageTk
@@ -35,6 +36,7 @@ class PtsyncGui(object):
         #mainwindow.protocol("WM_DELETE_WINDOW", self.__on_window_close)
         self.dlg_preferences = None
         self.dlg_addplaylist = None
+        self.dlg_copyto = None
         b.connect_callbacks(self)
         
         # theading
@@ -54,6 +56,18 @@ class PtsyncGui(object):
             logger.info('mgenplaylist')
             task = tasks.GeneratePlaylistsTask(self)
             task.start()
+        if itemid == 'mcopyfiles':
+            tree = self.pltree
+            sel = tree.selection()
+            if sel:
+                item = sel[0]
+                if not tree.tag_has('pl', item):
+                    tk.messagebox.showinfo('PTSync', 'No playlist selected.')
+                    return
+            if self.dlg_copyto is None:
+                self.dlg_copyto = CopyToDialog(self)
+                self.dlg_copyto.dialog.bind('<<PlaylistCopyTo>>', self.on_playlist_copy_to)
+            self.dlg_copyto.dialog.run()
     
     def on_addplaylist_cb(self, event=None):
         """Show add playlist dialog."""
@@ -65,6 +79,15 @@ class PtsyncGui(object):
     def on_addplaylist_url(self, event=None):
         """Starts add playlist task."""
         task = tasks.AddPlaylistTask(self, self.dlg_addplaylist.url)
+        task.start()
+    
+    def on_playlist_copy_to(self, event=None):
+        """Starts copy playlist to task."""
+        tree = self.pltree
+        sel = tree.selection()
+        item = sel[0]
+        folder = self.dlg_copyto.path
+        task = tasks.PlaylistCopyToTask(self, item, folder)
         task.start()
         
     def on_sync_cb(self, event=None):
@@ -80,16 +103,21 @@ class PtsyncGui(object):
             item = sel[0]
             if tree.tag_has('video', item):
                 img = None
+                vdesc = 'No description'
                 if StockImage.is_registered(item):
                     img = StockImage.get(item)
                 else:
                     video = DB.video_find(item)
+                    vdesc = video['description']
                     data = video['thumbdata']
                     if data:
                         img  = Image.open(io.BytesIO(data))
                         img = ImageTk.PhotoImage(img)
                         StockImage.register_created(item, img)
                 self.builder.get_object('vthumb').configure(image=img)
+                descr = self.builder.get_object('vdescription')
+                descr.delete('0.0', tk.END)
+                descr.insert('0.0', vdesc)
 
     def on_task_dialog_cancel(self, event=None):
         logger.debug('Send cancel signal')

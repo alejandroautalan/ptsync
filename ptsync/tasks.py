@@ -7,9 +7,9 @@ import json
 import logging
 import queue
 import threading
-
-#from pytube import YouTube
-import youtube_dl
+import shlex
+import subprocess
+import shutil
 
 from database import DB
 from prefs import appconf
@@ -38,21 +38,15 @@ class SyncTask(threading.Thread):
                 return
 
             # Video download
-            try:
-                if appconf.is_video_download_active():
-                    self.download_video(v)
-                else:
-                    logger.info('Video download inactive.')
-            except youtube_dl.utils.DownloadError as e:
-                logger.error(str(e))
+            if appconf.is_video_download_active():
+                self.download_video(v)
+            else:
+                logger.info('Video download inactive.')
             # Audio download
-            try:
-                if appconf.is_audio_download_active():
-                    self.download_audio(v)
-                else:
-                    logger.info('Audio download inactive.')
-            except youtube_dl.utils.DownloadError as e:
-                logger.error(str(e))
+            if appconf.is_audio_download_active():
+                self.download_audio(v)
+            else:
+                logger.info('Audio download inactive.')
         os.chdir(curdir)
         self.app.task_cmd('task_stop', message='Done.')
 
@@ -63,14 +57,19 @@ class SyncTask(threading.Thread):
             logger.info(msg)
             return
         os.chdir(self.videos_dir)
-        ydl_opts = {
+        opts = {
             'format': appconf.video_format(),
-            'outtmpl': '%(id)s__%(title)s.%(ext)s'
+            'outtmpl': '%(id)s__%(title)s.%(ext)s',
+            'url': 'http://www.youtube.com/watch?v={0}'.format(video_key)
             }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
-            self.app.task_cmd('downloading_video', name=video['title'])
-            ydl.download([url])
+        cmd = 'youtube-dl --format "{format}" --output "{outtmpl}" "{url}"'
+        cmd = cmd.format(**opts)
+        self.app.task_cmd('downloading_video', name=video['title'])
+        try:
+            cp = subprocess.run(shlex.split(cmd), check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(str(e))
+            raise e
 
     def download_audio(self, video):
         video_key = video['id']
@@ -80,15 +79,19 @@ class SyncTask(threading.Thread):
             return
 
         os.chdir(self.audio_dir)
-        ydl_opts = {
+        opts = {
             'format': appconf.audio_format(),
-#                    'audioquality': 6,
-            'outtmpl': '%(id)s__%(title)s.%(ext)s'
+            'outtmpl': '%(id)s__%(title)s.%(ext)s',
+            'url': 'http://www.youtube.com/watch?v={0}'.format(video_key)
             }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            url = 'http://www.youtube.com/watch?v={0}'.format(video_key)
-            self.app.task_cmd('downloading_video', name=video['title'])
-            ydl.download([url])
+        cmd = 'youtube-dl --format "{format}" --output "{outtmpl}" "{url}"'
+        cmd = cmd.format(**opts)
+        self.app.task_cmd('downloading_video', name=video['title'])
+        try:
+            cp = subprocess.run(shlex.split(cmd), check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(str(e))
+            raise e
 
     def file_exists(self, key, path):
         exists = False
@@ -126,56 +129,37 @@ class AddPlaylistTask(threading.Thread):
     def run(self):
         self.app.task_cmd('task_start', message='Getting playlist information ...')
         logger.info('Getting playlist information ... ')
-
-        playlist_id = self.playlist_id
-        data = self.fetch_info(playlist_id)
-        total_videos = int(data['feed']['openSearch$totalResults']['$t'])
-
-        thumbnail = None
-        for thumb in data['feed']['media$group']['media$thumbnail']:
-            if thumb['yt$name'] == 'hqdefault':
-                thumbnail = thumb['url']
-        pl = {
-            'id': playlist_id,
-            'title': data['feed']['title']['$t'],
-            'subtitle': data['feed']['subtitle']['$t'],
-            'updated': data['feed']['updated']['$t'],
-            'thumb': thumbnail
-            }
-        logger.info('Total videos: ' + str(total_videos))
-
-        self.app.task_cmd('add_playlist', playlist=pl)
-        downloaded = 1
-        while downloaded <= total_videos:
-
-            if self.app.task_cancel.is_set():
-                self.app.task_cmd('task_stop', 'Canceled.')
-                self.app.task_cancel.clear()
-                return
-
-            data = self.fetch_info(playlist_id, downloaded, 10)
-            entries = data['feed']['entry']
-            for entry in entries:
-                group = entry['media$group'];
-                yt_id = group['yt$videoid']['$t']
-                yt_title = group['media$title']['$t']
-
-                vthumb = None
-                for thumb in group['media$thumbnail']:
-                    if thumb['yt$name'] == 'hqdefault':
-                        vthumb = thumb['url']
-
-                video = {
-                    'id': yt_id,
-                    'title': yt_title,
-                    'thumb': vthumb,
-                    'thumbdata': self.fetch_thumb(vthumb)
-                }
-
-                self.app.task_cmd('add_video', playlist_id=playlist_id, video=video)
-                downloaded += 1
+        
+        cmd = 'youtube-dl -J --flat-playlist "{0}"'.format(self.playlist_id)
+        cmd = 'youtube-dl -J "{0}"'.format(self.playlist_id)
+        try:
+            cp = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, check=True)
+            data = json.loads(cp.stdout.decode())
+            self._process_json(data)
+        except subprocess.CalledProcessError as e:
+            raise e
+        
         self.app.task_cmd('task_stop', message='Done.')
-
+    
+    def _process_json(self, data):
+        pl = {
+            'id': data['id'],
+            'title': data['title'],
+            'thumb': None,
+            'subtitle': None
+            }
+        self.app.task_cmd('add_playlist', playlist=pl)
+        entries = data['entries']
+        for e in entries:
+            video = {
+                'id': e['id'],
+                'title': e['title'],
+                'description': e['description'],
+                'thumb': e['thumbnail'],
+                'thumbdata': self.fetch_thumb(e['thumbnail'])
+                }
+            self.app.task_cmd('add_video', playlist_id=pl['id'], video=video)
+    
     def fetch_thumb(self, url):
         data = None
         try:
@@ -183,23 +167,6 @@ class AddPlaylistTask(threading.Thread):
             data = r.read()
         except urllib.error.URLError as e:
             pass
-        return data
-
-    def fetch_info(self, playlistId, start = 1, limit = 0):
-        conn = http.client.HTTPConnection('gdata.youtube.com')
-        params = {
-            'alt' : 'json',
-            'max-results' : limit,
-            'start-index' : start,
-            'v' : 2
-        }
-        conn.request('GET', '/feeds/api/playlists/' + str(playlistId) + '/?' + urllib.parse.urlencode(params))
-        response = conn.getresponse()
-        if response.status != 200:
-            logger.error('Not a valid/public playlist.')
-            logger.info('Response status: {0}'.format(response.status))
-        data = response.readall()
-        data = json.loads(data.decode('utf-8'))
         return data
 
 
@@ -251,3 +218,66 @@ class GeneratePlaylistsTask(threading.Thread):
                 break
         return found
 
+
+class PlaylistCopyToTask(threading.Thread):
+    def __init__(self, app, playlist_id, path):
+        threading.Thread.__init__(self)
+        self.app = app
+        self.playlist_id = playlist_id
+        self.path = path
+
+    def run(self):
+        logger.debug('Starting task PlaylistCopyTo')
+        self.app.task_cmd('task_start', message='Copying Playlist audio/video files ...')
+        playlist_dir = appconf.playlists_dir()
+        videodirlist = os.listdir(os.path.join(playlist_dir, 'video'))
+        audiodirlist = os.listdir(os.path.join(playlist_dir, 'audio'))
+        
+        db = DB.new_connection()
+        playlist = db.playlist_find(self.playlist_id)
+        audiolist = []
+        videolist = []
+        videos = db.playlist_video_list(self.playlist_id)
+        for video in videos:
+            filename = self.get_filename(video['id'], videodirlist)
+            if filename:
+                copy_from = os.path.join(playlist_dir, 'video', filename)
+                copy_to = os.path.join(self.path, filename)
+                try:
+                    shutil.copyfile(copy_from, copy_to)
+                except IOError as e:
+                    raise e
+                videolist.append(filename)
+            
+            filename = self.get_filename(video['id'], audiodirlist)
+            if filename:
+                copy_from = os.path.join(playlist_dir, 'audio', filename)
+                copy_to = os.path.join(self.path, filename)
+                try:
+                    shutil.copyfile(copy_from, copy_to)
+                except IOError as e:
+                    raise e
+                audiolist.append(filename)
+
+        videopl = '{0}__video.m3u'.format(playlist['title'])
+        vpath = os.path.join(self.path, videopl)
+        if videolist:
+            pl = PlaylistFile(videolist)
+            pl.save(vpath)
+        
+        audiopl = '{0}__audio.m3u'.format(playlist['title'])
+        apath = os.path.join(self.path, audiopl)
+        if audiolist:
+            pl = PlaylistFile(audiolist)
+            pl.save(apath)
+        
+        logger.debug('Done task PlaylistCopyTo')
+        self.app.task_cmd('task_stop', message='Done.')
+    
+    def get_filename(self, vid, dirlist):
+        found = None
+        for f in dirlist:
+            if f.startswith(vid):
+                found = f
+                break
+        return found

@@ -30,6 +30,12 @@ class Database(object):
         c = self.conn.cursor()
         c.execute(sql, (pid,))
         return c.fetchone()
+    
+    def playlist_find(self, plid):
+        sql = "SELECT * from playlist WHERE id = ?"
+        c = self.conn.cursor()
+        c.execute(sql, (plid,))
+        return c.fetchone()
 
     def playlist_save(self, data):
         isql = \
@@ -63,11 +69,11 @@ class Database(object):
 #            data[field] = buffer(data[field])
 
         isql = \
-            """INSERT into video (id, title, thumb, thumbdata)
-            values (:id, :title, :thumb, :thumbdata)"""
+            """INSERT into video (id, title, description, thumb, thumbdata)
+            values (:id, :title, :description, :thumb, :thumbdata)"""
         usql = \
             """UPDATE playlist
-            SET title=:title, thumb=:thumb, thumbdata=:thumbdata WHERE id=:id"""
+            SET title=:title, description=:description, thumb=:thumb, thumbdata=:thumbdata WHERE id=:id"""
         sql = isql
         if self.video_exists(data['id']):
             sql = usql
@@ -76,7 +82,7 @@ class Database(object):
         self.conn.commit()
         
     def video_list(self):
-        sql = "SELECT id, title, thumb FROM video"
+        sql = "SELECT id, title, description, thumb FROM video"
         c = self.conn.cursor()
         c.execute(sql)
         return c.fetchall()
@@ -126,6 +132,7 @@ class Database(object):
             """CREATE TABLE video ( 
                 id    VARCHAR( 128 )  PRIMARY KEY,
                 title VARCHAR( 128 ),
+                description TEXT,
                 thumb VARCHAR( 128 ),
                 thumbdata BLOB 
             );""",

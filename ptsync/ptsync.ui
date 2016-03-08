@@ -32,7 +32,7 @@
           </columns>
         </layout>
         <child>
-          <object class="ttk.Frame" id="Frame_4">
+          <object class="ttk.Frame" id="toolbarframe">
             <property name="height">200</property>
             <property name="padding">0 0 0 5</property>
             <property name="width">200</property>
@@ -129,6 +129,13 @@
                         <property name="command">on_mainmenu_cb</property>
                         <property name="command_id_arg">true</property>
                         <property name="label" translatable="yes">Generate Playlist files</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="tk.Menuitem.Command" id="mcopyfiles">
+                        <property name="command">on_mainmenu_cb</property>
+                        <property name="command_id_arg">true</property>
+                        <property name="label" translatable="yes">Copy audio/video files</property>
                       </object>
                     </child>
                     <child>
@@ -733,7 +740,7 @@
         </child>
         <child>
           <object class="ttk.Entry" id="Entry_1">
-            <property name="text" translatable="yes">PLYZSCMdXWGA5S-i55U3-hSiNjXRFBsx4X</property>
+            <property name="text" translatable="yes">https://www.youtube.com/playlist?list=PLYZSCMdXWGA70ZRl_M-PAq19IcqMwn7xH</property>
             <property name="textvariable">string:playlisturl</property>
             <property name="width">50</property>
             <layout>
@@ -896,6 +903,88 @@ line 2</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="pygubu.builder.widgets.dialog" id="copytodialog">
+    <property name="height">100</property>
+    <property name="modal">false</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="Frame_4">
+        <property name="height">200</property>
+        <property name="padding">2</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="Label_9">
+            <property name="text" translatable="yes">Copy to folder:</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.builder.widgets.pathchooserinput" id="copyto_path">
+            <property name="textvariable">string:copyto_path</property>
+            <property name="type">directory</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Frame_15">
+            <property name="height">200</property>
+            <property name="padding">0 5 0 0</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="columnspan">2</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="rowspan">1</property>
+              <property name="sticky">e</property>
+              <columns>
+                <column id="0">
+                  <property name="pad">10</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="Button_4">
+                <property name="command">on_copyto_cancel</property>
+                <property name="text" translatable="yes">Cancel</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Button_5">
+                <property name="command">on_copyto_ok</property>
+                <property name="text" translatable="yes">Ok</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
                 </layout>
               </object>
             </child>

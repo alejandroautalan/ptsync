@@ -12,7 +12,7 @@ class AppConfig(object):
     VARS = (
         ('playlist_dir', '/home'),
         ('video_download', 'true'),
-        ('video_format', '[height <=? 720]'),
+        ('video_format', '[height <? 720]'),
         ('audio_download', 'true'),
         ('audio_format', 'bestaudio'),
     )
@@ -45,7 +45,7 @@ class AppConfig(object):
             os.makedirs(self.dirs.user_data_dir)
         if not os.path.exists(self.config_file):
             with open(self.config_file, 'w') as configfile:
-                self.config.write(self.config_file)
+                self.config.write(configfile)
                 
     def playlists_dir(self):
         return self.download_dir()
