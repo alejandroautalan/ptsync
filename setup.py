@@ -17,7 +17,7 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'youtube-dl',
     'appdirs>=1.4',
-    'pygubu>=0.9.7.4
+    'pygubu>=0.9.7.4',
 ]
 
 test_requirements = [
