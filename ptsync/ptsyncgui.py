@@ -10,10 +10,10 @@ import threading
 from PIL import Image, ImageTk
 
 import pygubu
-import tasks
+import ptsync.tasks as tasks
 from pygubu.stockimage import *
-from dialogs import *
-from database import DB
+from .dialogs import *
+from .database import DB
 
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))

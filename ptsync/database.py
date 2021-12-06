@@ -1,7 +1,7 @@
 import os
 import logging
 import sqlite3 as sqlite
-from prefs import appconf
+from .prefs import appconf
 
 logger = logging.getLogger(__name__)
 

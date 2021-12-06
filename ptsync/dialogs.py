@@ -3,7 +3,7 @@ import logging
 import tkinter as tk
 import tkinter.messagebox
 
-from prefs import appconf
+from .prefs import appconf
 
 logger = logging.getLogger(__name__)
 

@@ -11,9 +11,9 @@ import shlex
 import subprocess
 import shutil
 
-from database import DB
-from prefs import appconf
-from playlistfile import PlaylistFile
+from .database import DB
+from .prefs import appconf
+from .playlistfile import PlaylistFile
 
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class SyncTask(threading.Thread):
             'format': appconf.video_format(),
             'outtmpl': '%(id)s__%(title)s.%(ext)s',
             'url': 'http://www.youtube.com/watch?v={0}'.format(video_key)
-            }
+        }
         cmd = 'youtube-dl --format "{format}" --output "{outtmpl}" "{url}"'
         cmd = cmd.format(**opts)
         self.app.task_cmd('downloading_video', name=video['title'])
@@ -83,7 +83,7 @@ class SyncTask(threading.Thread):
             'format': appconf.audio_format(),
             'outtmpl': '%(id)s__%(title)s.%(ext)s',
             'url': 'http://www.youtube.com/watch?v={0}'.format(video_key)
-            }
+        }
         cmd = 'youtube-dl --format "{format}" --output "{outtmpl}" "{url}"'
         cmd = cmd.format(**opts)
         self.app.task_cmd('downloading_video', name=video['title'])
@@ -127,27 +127,29 @@ class AddPlaylistTask(threading.Thread):
         self.playlist_id = plid
 
     def run(self):
-        self.app.task_cmd('task_start', message='Getting playlist information ...')
+        self.app.task_cmd(
+            'task_start', message='Getting playlist information ...')
         logger.info('Getting playlist information ... ')
-        
+
         cmd = 'youtube-dl -J --flat-playlist "{0}"'.format(self.playlist_id)
         cmd = 'youtube-dl -J "{0}"'.format(self.playlist_id)
         try:
-            cp = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, check=True)
+            cp = subprocess.run(shlex.split(
+                cmd), stdout=subprocess.PIPE, check=True)
             data = json.loads(cp.stdout.decode())
             self._process_json(data)
         except subprocess.CalledProcessError as e:
             raise e
-        
+
         self.app.task_cmd('task_stop', message='Done.')
-    
+
     def _process_json(self, data):
         pl = {
             'id': data['id'],
             'title': data['title'],
             'thumb': None,
             'subtitle': None
-            }
+        }
         self.app.task_cmd('add_playlist', playlist=pl)
         entries = data['entries']
         for e in entries:
@@ -157,9 +159,9 @@ class AddPlaylistTask(threading.Thread):
                 'description': e['description'],
                 'thumb': e['thumbnail'],
                 'thumbdata': self.fetch_thumb(e['thumbnail'])
-                }
+            }
             self.app.task_cmd('add_video', playlist_id=pl['id'], video=video)
-    
+
     def fetch_thumb(self, url):
         data = None
         try:
@@ -181,7 +183,7 @@ class GeneratePlaylistsTask(threading.Thread):
         playlist_dir = appconf.playlists_dir()
         videodirlist = os.listdir(os.path.join(playlist_dir, 'video'))
         audiodirlist = os.listdir(os.path.join(playlist_dir, 'audio'))
-        
+
         db = DB.new_connection()
         pls = db.playlist_list()
         for pl in pls:
@@ -192,7 +194,7 @@ class GeneratePlaylistsTask(threading.Thread):
                 filename = self.get_filename(video['id'], videodirlist)
                 if filename:
                     videolist.append(os.path.join('video', filename))
-                
+
                 filename = self.get_filename(video['id'], audiodirlist)
                 if filename:
                     audiolist.append(os.path.join('audio', filename))
@@ -203,13 +205,13 @@ class GeneratePlaylistsTask(threading.Thread):
             apath = os.path.join(playlist_dir, audiopl)
             pl = PlaylistFile(videolist)
             pl.save(vpath)
-            
+
             pl = PlaylistFile(audiolist)
             pl.save(apath)
-        
+
         logger.debug('Done task GeneratePlaylists')
         self.app.task_cmd('task_stop', message='Done.')
-        
+
     def get_filename(self, vid, dirlist):
         found = None
         for f in dirlist:
@@ -228,11 +230,12 @@ class PlaylistCopyToTask(threading.Thread):
 
     def run(self):
         logger.debug('Starting task PlaylistCopyTo')
-        self.app.task_cmd('task_start', message='Copying Playlist audio/video files ...')
+        self.app.task_cmd(
+            'task_start', message='Copying Playlist audio/video files ...')
         playlist_dir = appconf.playlists_dir()
         videodirlist = os.listdir(os.path.join(playlist_dir, 'video'))
         audiodirlist = os.listdir(os.path.join(playlist_dir, 'audio'))
-        
+
         db = DB.new_connection()
         playlist = db.playlist_find(self.playlist_id)
         audiolist = []
@@ -248,7 +251,7 @@ class PlaylistCopyToTask(threading.Thread):
                 except IOError as e:
                     raise e
                 videolist.append(filename)
-            
+
             filename = self.get_filename(video['id'], audiodirlist)
             if filename:
                 copy_from = os.path.join(playlist_dir, 'audio', filename)
@@ -264,16 +267,16 @@ class PlaylistCopyToTask(threading.Thread):
         if videolist:
             pl = PlaylistFile(videolist)
             pl.save(vpath)
-        
+
         audiopl = '{0}__audio.m3u'.format(playlist['title'])
         apath = os.path.join(self.path, audiopl)
         if audiolist:
             pl = PlaylistFile(audiolist)
             pl.save(apath)
-        
+
         logger.debug('Done task PlaylistCopyTo')
         self.app.task_cmd('task_stop', message='Done.')
-    
+
     def get_filename(self, vid, dirlist):
         found = None
         for f in dirlist:
