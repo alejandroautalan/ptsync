@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<interface>
+<interface version="1.1">
   <object class="tk.Toplevel" id="mainwindow">
     <property name="geometry">640x420</property>
     <property name="height">200</property>
@@ -12,102 +12,97 @@
         <property name="height">200</property>
         <property name="padding">2</property>
         <property name="width">200</property>
-        <layout>
+        <layout manager="grid">
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="sticky">nsew</property>
-          <rows>
-            <row id="0">
-              <property name="weight">0</property>
-            </row>
-            <row id="1">
-              <property name="weight">1</property>
-            </row>
-          </rows>
-          <columns>
-            <column id="0">
-              <property name="weight">1</property>
-            </column>
-          </columns>
+          <property type="col" id="0" name="weight">1</property>
+          <property type="row" id="0" name="weight">1</property>
         </layout>
         <child>
           <object class="ttk.Frame" id="toolbarframe">
             <property name="height">200</property>
             <property name="padding">0 0 0 5</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
               <property name="sticky">nsw</property>
-              <columns>
-                <column id="0">
-                  <property name="pad">2</property>
-                </column>
-                <column id="1">
-                  <property name="pad">2</property>
-                </column>
-                <column id="2">
-                  <property name="pad">2</property>
-                </column>
-                <column id="3">
-                  <property name="pad">2</property>
-                </column>
-                <column id="4">
-                  <property name="minsize">0</property>
-                </column>
-              </columns>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="0" name="weight">0</property>
+              <property type="row" id="1" name="weight">1</property>
             </layout>
             <child>
               <object class="ttk.Button" id="addpl_button">
-                <property name="command">on_addplaylist_cb</property>
+                <property name="command" type="command" cbtype="simple" args="">on_addplaylist_cb</property>
                 <property name="compound">left</property>
                 <property name="image">list-add.png</property>
                 <property name="style">Toolbutton</property>
                 <property name="text" translatable="yes">Add</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="ipady">5</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="pad">2</property>
+                  <property type="col" id="1" name="pad">2</property>
+                  <property type="col" id="2" name="pad">2</property>
+                  <property type="col" id="3" name="pad">2</property>
+                  <property type="col" id="4" name="minsize">0</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="ttk.Separator" id="Separator_1">
                 <property name="orient">vertical</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">1</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">ns</property>
+                  <property type="col" id="0" name="pad">2</property>
+                  <property type="col" id="1" name="pad">2</property>
+                  <property type="col" id="2" name="pad">2</property>
+                  <property type="col" id="3" name="pad">2</property>
+                  <property type="col" id="4" name="minsize">0</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="ttk.Button" id="sync_button">
-                <property name="command">on_sync_cb</property>
+                <property name="command" type="command" cbtype="simple" args="">on_sync_cb</property>
                 <property name="compound">left</property>
                 <property name="image">view-refresh.png</property>
                 <property name="style">Toolbutton</property>
                 <property name="text" translatable="yes">Sync</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">2</property>
                   <property name="ipady">5</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="pad">2</property>
+                  <property type="col" id="1" name="pad">2</property>
+                  <property type="col" id="2" name="pad">2</property>
+                  <property type="col" id="3" name="pad">2</property>
+                  <property type="col" id="4" name="minsize">0</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="ttk.Separator" id="Separator_2">
                 <property name="orient">vertical</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">3</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">ns</property>
+                  <property type="col" id="0" name="pad">2</property>
+                  <property type="col" id="1" name="pad">2</property>
+                  <property type="col" id="2" name="pad">2</property>
+                  <property type="col" id="3" name="pad">2</property>
+                  <property type="col" id="4" name="minsize">0</property>
                 </layout>
               </object>
             </child>
@@ -115,26 +110,29 @@
               <object class="ttk.Menubutton" id="Menubutton_1">
                 <property name="image">applications-system.png</property>
                 <property name="style">Toolbutton</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">4</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">nsew</property>
+                  <property type="col" id="0" name="pad">2</property>
+                  <property type="col" id="1" name="pad">2</property>
+                  <property type="col" id="2" name="pad">2</property>
+                  <property type="col" id="3" name="pad">2</property>
+                  <property type="col" id="4" name="minsize">0</property>
                 </layout>
                 <child>
                   <object class="tk.Menu" id="mmenu">
                     <property name="tearoff">false</property>
                     <child>
                       <object class="tk.Menuitem.Command" id="mgenplaylist">
-                        <property name="command">on_mainmenu_cb</property>
-                        <property name="command_id_arg">true</property>
+                        <property name="command" type="command" cbtype="with_wid" args="">on_mainmenu_cb</property>
                         <property name="label" translatable="yes">Generate Playlist files</property>
                       </object>
                     </child>
                     <child>
                       <object class="tk.Menuitem.Command" id="mcopyfiles">
-                        <property name="command">on_mainmenu_cb</property>
-                        <property name="command_id_arg">true</property>
+                        <property name="command" type="command" cbtype="with_wid" args="">on_mainmenu_cb</property>
                         <property name="label" translatable="yes">Copy audio/video files</property>
                       </object>
                     </child>
@@ -143,8 +141,7 @@
                     </child>
                     <child>
                       <object class="tk.Menuitem.Command" id="mprefs">
-                        <property name="command">on_mainmenu_cb</property>
-                        <property name="command_id_arg">true</property>
+                        <property name="command" type="command" cbtype="with_wid" args="">on_mainmenu_cb</property>
                         <property name="label" translatable="yes">Preferences</property>
                       </object>
                     </child>
@@ -158,32 +155,27 @@
           <object class="ttk.Frame" id="Frame_10">
             <property name="height">200</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
               <property name="sticky">nsew</property>
-              <rows>
-                <row id="0">
-                  <property name="weight">1</property>
-                </row>
-              </rows>
-              <columns>
-                <column id="0">
-                  <property name="weight">1</property>
-                </column>
-              </columns>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="0" name="weight">0</property>
+              <property type="row" id="1" name="weight">1</property>
             </layout>
             <child>
               <object class="ttk.Panedwindow" id="Panedwindow_1">
                 <property name="height">200</property>
                 <property name="orient">vertical</property>
                 <property name="width">200</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">nsew</property>
+                  <property type="col" id="0" name="weight">1</property>
+                  <property type="row" id="0" name="weight">1</property>
                 </layout>
                 <child>
                   <object class="ttk.Panedwindow.Pane" id="Pane_1">
@@ -192,36 +184,28 @@
                       <object class="ttk.Frame" id="Frame_2">
                         <property name="height">200</property>
                         <property name="width">200</property>
-                        <layout>
+                        <layout manager="grid">
                           <property name="column">0</property>
                           <property name="propagate">True</property>
                           <property name="row">0</property>
                           <property name="sticky">nsew</property>
-                          <rows>
-                            <row id="0">
-                              <property name="weight">1</property>
-                            </row>
-                          </rows>
-                          <columns>
-                            <column id="0">
-                              <property name="weight">1</property>
-                            </column>
-                          </columns>
                         </layout>
                         <child>
                           <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
                             <property name="scrolltype">both</property>
-                            <layout>
+                            <layout manager="grid">
                               <property name="column">0</property>
                               <property name="propagate">True</property>
                               <property name="row">0</property>
                               <property name="sticky">nsew</property>
+                              <property type="col" id="0" name="weight">1</property>
+                              <property type="row" id="0" name="weight">1</property>
                             </layout>
                             <child>
                               <object class="pygubu.builder.widgets.editabletreeview" id="pltree">
                                 <property name="height">6</property>
-                                <bind add="" handler="on_item_select" sequence="&lt;&lt;TreeviewSelect&gt;&gt;" />
-                                <layout>
+                                <bind sequence="&lt;&lt;TreeviewSelect&gt;&gt;" handler="on_item_select" add="" />
+                                <layout manager="grid">
                                   <property name="column">0</property>
                                   <property name="propagate">True</property>
                                   <property name="row">1</property>
@@ -288,52 +272,44 @@
                       <object class="ttk.Frame" id="Frame_3">
                         <property name="height">200</property>
                         <property name="width">200</property>
-                        <layout>
+                        <layout manager="grid">
                           <property name="column">0</property>
                           <property name="propagate">True</property>
                           <property name="row">0</property>
                           <property name="sticky">nsew</property>
-                          <rows>
-                            <row id="0">
-                              <property name="pad">10</property>
-                            </row>
-                            <row id="1">
-                              <property name="minsize">0</property>
-                              <property name="pad">10</property>
-                            </row>
-                          </rows>
-                          <columns>
-                            <column id="0">
-                              <property name="pad">10</property>
-                            </column>
-                            <column id="1">
-                              <property name="pad">10</property>
-                            </column>
-                            <column id="2">
-                              <property name="pad">10</property>
-                            </column>
-                          </columns>
                         </layout>
                         <child>
                           <object class="ttk.Label" id="lbltitle">
                             <property name="font">TkHeadingFont</property>
                             <property name="text" translatable="yes">Title:</property>
-                            <layout>
+                            <layout manager="grid">
                               <property name="column">0</property>
                               <property name="propagate">True</property>
                               <property name="row">0</property>
                               <property name="sticky">w</property>
+                              <property type="col" id="0" name="pad">10</property>
+                              <property type="col" id="1" name="pad">10</property>
+                              <property type="col" id="2" name="pad">10</property>
+                              <property type="row" id="0" name="pad">10</property>
+                              <property type="row" id="1" name="minsize">0</property>
+                              <property type="row" id="1" name="pad">10</property>
                             </layout>
                           </object>
                         </child>
                         <child>
                           <object class="ttk.Label" id="vtitle">
                             <property name="text" translatable="yes">Video title</property>
-                            <layout>
+                            <layout manager="grid">
                               <property name="column">1</property>
                               <property name="propagate">True</property>
                               <property name="row">0</property>
                               <property name="sticky">w</property>
+                              <property type="col" id="0" name="pad">10</property>
+                              <property type="col" id="1" name="pad">10</property>
+                              <property type="col" id="2" name="pad">10</property>
+                              <property type="row" id="0" name="pad">10</property>
+                              <property type="row" id="1" name="minsize">0</property>
+                              <property type="row" id="1" name="pad">10</property>
                             </layout>
                           </object>
                         </child>
@@ -341,22 +317,34 @@
                           <object class="ttk.Label" id="lbl_descr">
                             <property name="font">TkHeadingFont</property>
                             <property name="text" translatable="yes">Description:</property>
-                            <layout>
+                            <layout manager="grid">
                               <property name="column">0</property>
                               <property name="propagate">True</property>
                               <property name="row">1</property>
                               <property name="sticky">w</property>
+                              <property type="col" id="0" name="pad">10</property>
+                              <property type="col" id="1" name="pad">10</property>
+                              <property type="col" id="2" name="pad">10</property>
+                              <property type="row" id="0" name="pad">10</property>
+                              <property type="row" id="1" name="minsize">0</property>
+                              <property type="row" id="1" name="pad">10</property>
                             </layout>
                           </object>
                         </child>
                         <child>
                           <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_2">
                             <property name="scrolltype">both</property>
-                            <layout>
+                            <layout manager="grid">
                               <property name="column">1</property>
                               <property name="propagate">True</property>
                               <property name="row">1</property>
                               <property name="sticky">nsew</property>
+                              <property type="col" id="0" name="pad">10</property>
+                              <property type="col" id="1" name="pad">10</property>
+                              <property type="col" id="2" name="pad">10</property>
+                              <property type="row" id="0" name="pad">10</property>
+                              <property type="row" id="1" name="minsize">0</property>
+                              <property type="row" id="1" name="pad">10</property>
                             </layout>
                             <child>
                               <object class="tk.Text" id="vdescription">
@@ -364,7 +352,7 @@
                                 <property name="height">10</property>
                                 <property name="text" translatable="yes">No video description.</property>
                                 <property name="width">50</property>
-                                <layout>
+                                <layout manager="grid">
                                   <property name="column">0</property>
                                   <property name="propagate">True</property>
                                   <property name="row">0</property>
@@ -379,12 +367,18 @@
                             <property name="borderwidth">2</property>
                             <property name="relief">sunken</property>
                             <property name="text" translatable="yes">No image</property>
-                            <layout>
+                            <layout manager="grid">
                               <property name="column">2</property>
                               <property name="padx">5</property>
                               <property name="propagate">True</property>
                               <property name="row">1</property>
                               <property name="sticky">nw</property>
+                              <property type="col" id="0" name="pad">10</property>
+                              <property type="col" id="1" name="pad">10</property>
+                              <property type="col" id="2" name="pad">10</property>
+                              <property type="row" id="0" name="pad">10</property>
+                              <property type="row" id="1" name="minsize">0</property>
+                              <property type="row" id="1" name="pad">10</property>
                             </layout>
                           </object>
                         </child>
@@ -403,33 +397,33 @@
             <property name="padding">0 2 0 0</property>
             <property name="relief">sunken</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">2</property>
               <property name="sticky">ew</property>
-              <columns>
-                <column id="0">
-                  <property name="weight">1</property>
-                </column>
-              </columns>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="0" name="weight">0</property>
+              <property type="row" id="1" name="weight">1</property>
             </layout>
             <child>
               <object class="ttk.Label" id="Label_7">
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">ew</property>
+                  <property type="col" id="0" name="weight">1</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="ttk.Sizegrip" id="Sizegrip_1">
-                <layout>
+                <layout manager="grid">
                   <property name="column">1</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="weight">1</property>
                 </layout>
               </object>
             </child>
@@ -444,61 +438,34 @@
     <property name="resizable">both</property>
     <property name="title" translatable="yes">ptsync preferences</property>
     <property name="width">200</property>
-    <bind add="" handler="on_preferences_close" sequence="&lt;&lt;DialogClose&gt;&gt;" />
+    <bind sequence="&lt;&lt;DialogClose&gt;&gt;" handler="on_preferences_close" add="" />
     <child>
       <object class="ttk.Frame" id="Frame_5">
         <property name="height">200</property>
         <property name="padding">5</property>
         <property name="width">200</property>
-        <layout>
+        <layout manager="grid">
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="sticky">nsew</property>
-          <rows>
-            <row id="0">
-              <property name="weight">1</property>
-            </row>
-            <row id="1">
-              <property name="weight">1</property>
-            </row>
-            <row id="2">
-              <property name="weight">0</property>
-            </row>
-          </rows>
-          <columns>
-            <column id="0">
-              <property name="weight">1</property>
-            </column>
-            <column id="1">
-              <property name="weight">0</property>
-            </column>
-          </columns>
+          <property type="col" id="0" name="weight">1</property>
+          <property type="row" id="0" name="weight">1</property>
         </layout>
         <child>
           <object class="ttk.Frame" id="Frame_13">
             <property name="height">200</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
               <property name="sticky">nsew</property>
-              <rows>
-                <row id="0">
-                  <property name="pad">0</property>
-                  <property name="weight">0</property>
-                </row>
-                <row id="1">
-                  <property name="pad">0</property>
-                  <property name="weight">0</property>
-                </row>
-              </rows>
-              <columns>
-                <column id="0">
-                  <property name="weight">1</property>
-                </column>
-              </columns>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="col" id="1" name="weight">0</property>
+              <property type="row" id="0" name="weight">1</property>
+              <property type="row" id="1" name="weight">1</property>
+              <property type="row" id="2" name="weight">0</property>
             </layout>
             <child>
               <object class="ttk.Labelframe" id="Labelframe_2">
@@ -506,33 +473,28 @@
                 <property name="padding">5</property>
                 <property name="text" translatable="yes">Playlist</property>
                 <property name="width">200</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">nsew</property>
-                  <rows>
-                    <row id="0">
-                      <property name="weight">0</property>
-                    </row>
-                    <row id="1">
-                      <property name="weight">1</property>
-                    </row>
-                  </rows>
-                  <columns>
-                    <column id="0">
-                      <property name="weight">1</property>
-                    </column>
-                  </columns>
+                  <property type="col" id="0" name="weight">1</property>
+                  <property type="row" id="0" name="pad">0</property>
+                  <property type="row" id="0" name="weight">0</property>
+                  <property type="row" id="1" name="pad">0</property>
+                  <property type="row" id="1" name="weight">0</property>
                 </layout>
                 <child>
                   <object class="ttk.Label" id="Label_2">
                     <property name="text" translatable="yes">Playlist root directory:</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                       <property name="sticky">w</property>
+                      <property type="col" id="0" name="weight">1</property>
+                      <property type="row" id="0" name="weight">0</property>
+                      <property type="row" id="1" name="weight">1</property>
                     </layout>
                   </object>
                 </child>
@@ -540,24 +502,30 @@
                   <object class="pygubu.builder.widgets.pathchooserinput" id="playlist_dir">
                     <property name="textvariable">string:playlist_dir</property>
                     <property name="type">directory</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="columnspan">1</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                       <property name="rowspan">1</property>
                       <property name="sticky">ew</property>
+                      <property type="col" id="0" name="weight">1</property>
+                      <property type="row" id="0" name="weight">0</property>
+                      <property type="row" id="1" name="weight">1</property>
                     </layout>
                   </object>
                 </child>
                 <child>
                   <object class="ttk.Label" id="Label_8">
                     <property name="text" translatable="yes">Directory where videos are downloaded.</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                       <property name="sticky">ew</property>
+                      <property type="col" id="0" name="weight">1</property>
+                      <property type="row" id="0" name="weight">0</property>
+                      <property type="row" id="1" name="weight">1</property>
                     </layout>
                   </object>
                 </child>
@@ -569,33 +537,28 @@
                 <property name="padding">5</property>
                 <property name="text" translatable="yes">Video/Audio</property>
                 <property name="width">200</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">1</property>
                   <property name="sticky">nsew</property>
-                  <rows>
-                    <row id="1">
-                      <property name="pad">10</property>
-                    </row>
-                  </rows>
-                  <columns>
-                    <column id="0">
-                      <property name="pad">0</property>
-                    </column>
-                    <column id="1">
-                      <property name="pad">0</property>
-                    </column>
-                  </columns>
+                  <property type="col" id="0" name="weight">1</property>
+                  <property type="row" id="0" name="pad">0</property>
+                  <property type="row" id="0" name="weight">0</property>
+                  <property type="row" id="1" name="pad">0</property>
+                  <property type="row" id="1" name="weight">0</property>
                 </layout>
                 <child>
                   <object class="ttk.Label" id="Label_4">
                     <property name="text" translatable="yes">Video download:</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                       <property name="sticky">e</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
@@ -604,44 +567,56 @@
                     <property name="offvalue">false</property>
                     <property name="onvalue">true</property>
                     <property name="variable">string:video_download</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">1</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                       <property name="sticky">w</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
                 <child>
                   <object class="ttk.Label" id="Label_1">
                     <property name="text" translatable="yes">Video format:</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                       <property name="sticky">e</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
                 <child>
                   <object class="ttk.Entry" id="video_format">
                     <property name="textvariable">string:video_format</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">1</property>
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                       <property name="sticky">ew</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
                 <child>
                   <object class="ttk.Label" id="Label_5">
                     <property name="text" translatable="yes">Audio download:</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                       <property name="sticky">e</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
@@ -650,32 +625,41 @@
                     <property name="offvalue">false</property>
                     <property name="onvalue">true</property>
                     <property name="variable">string:audio_download</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">1</property>
                       <property name="propagate">True</property>
                       <property name="row">2</property>
                       <property name="sticky">w</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
                 <child>
                   <object class="ttk.Label" id="Label_6">
                     <property name="text" translatable="yes">Audio Format:</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">3</property>
                       <property name="sticky">e</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
                 <child>
                   <object class="ttk.Entry" id="Entry_3">
                     <property name="textvariable">string:audio_format</property>
-                    <layout>
+                    <layout manager="grid">
                       <property name="column">1</property>
                       <property name="propagate">True</property>
                       <property name="row">3</property>
+                      <property type="col" id="0" name="pad">0</property>
+                      <property type="col" id="1" name="pad">0</property>
+                      <property type="row" id="1" name="pad">10</property>
                     </layout>
                   </object>
                 </child>
@@ -688,19 +672,24 @@
             <property name="height">200</property>
             <property name="padding">0 5 0 0</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="columnspan">1</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
               <property name="rowspan">1</property>
               <property name="sticky">e</property>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="col" id="1" name="weight">0</property>
+              <property type="row" id="0" name="weight">1</property>
+              <property type="row" id="1" name="weight">1</property>
+              <property type="row" id="2" name="weight">0</property>
             </layout>
             <child>
               <object class="ttk.Button" id="Button_1">
-                <property name="command">on_preferences_close</property>
+                <property name="command" type="command" cbtype="simple" args="">on_preferences_close</property>
                 <property name="text" translatable="yes">Close</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
@@ -717,13 +706,13 @@
     <property name="modal">true</property>
     <property name="title" translatable="yes">Add playlist</property>
     <property name="width">200</property>
-    <bind add="" handler="on_addplaylist_cancel" sequence="&lt;&lt;DialogClose&gt;&gt;" />
+    <bind sequence="&lt;&lt;DialogClose&gt;&gt;" handler="on_addplaylist_cancel" add="" />
     <child>
       <object class="ttk.Frame" id="Frame_7">
         <property name="height">200</property>
         <property name="padding">5</property>
         <property name="width">200</property>
-        <layout>
+        <layout manager="grid">
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
@@ -731,7 +720,7 @@
         <child>
           <object class="ttk.Label" id="Label_3">
             <property name="text" translatable="yes">Playlist URL:</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
@@ -743,7 +732,7 @@
             <property name="text" translatable="yes">https://www.youtube.com/playlist?list=PLYZSCMdXWGA70ZRl_M-PAq19IcqMwn7xH</property>
             <property name="textvariable">string:playlisturl</property>
             <property name="width">50</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">1</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
@@ -755,38 +744,35 @@
             <property name="height">200</property>
             <property name="padding">0 5 0 0</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="columnspan">2</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
               <property name="rowspan">1</property>
               <property name="sticky">e</property>
-              <columns>
-                <column id="0">
-                  <property name="pad">10</property>
-                </column>
-              </columns>
             </layout>
             <child>
               <object class="ttk.Button" id="Button_2">
-                <property name="command">on_addplaylist_cancel</property>
+                <property name="command" type="command" cbtype="simple" args="">on_addplaylist_cancel</property>
                 <property name="text" translatable="yes">Cancel</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="pad">10</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="ttk.Button" id="Button_3">
-                <property name="command">on_addplaylist_ok</property>
+                <property name="command" type="command" cbtype="simple" args="">on_addplaylist_ok</property>
                 <property name="text" translatable="yes">Ok</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">1</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="pad">10</property>
                 </layout>
               </object>
             </child>
@@ -807,55 +793,37 @@
         <property name="padding">5</property>
         <property name="relief">sunken</property>
         <property name="width">200</property>
-        <layout>
+        <layout manager="grid">
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="sticky">nsew</property>
-          <rows>
-            <row id="0">
-              <property name="weight">1</property>
-            </row>
-          </rows>
-          <columns>
-            <column id="0">
-              <property name="weight">1</property>
-            </column>
-          </columns>
         </layout>
         <child>
           <object class="ttk.Frame" id="Frame_11">
             <property name="height">200</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
               <property name="sticky">nsew</property>
-              <rows>
-                <row id="0">
-                  <property name="weight">2</property>
-                </row>
-                <row id="1">
-                  <property name="weight">0</property>
-                </row>
-              </rows>
-              <columns>
-                <column id="0">
-                  <property name="weight">1</property>
-                </column>
-              </columns>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="0" name="weight">1</property>
             </layout>
             <child>
               <object class="ttk.Label" id="task_msg">
                 <property name="padding">0 5 0 5</property>
                 <property name="text" translatable="yes">Label_4
 line 2</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">new</property>
+                  <property type="col" id="0" name="weight">1</property>
+                  <property type="row" id="0" name="weight">2</property>
+                  <property type="row" id="1" name="weight">0</property>
                 </layout>
               </object>
             </child>
@@ -863,11 +831,14 @@ line 2</property>
               <object class="ttk.Progressbar" id="task_progress">
                 <property name="mode">determinate</property>
                 <property name="orient">horizontal</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">1</property>
                   <property name="sticky">ew</property>
+                  <property type="col" id="0" name="weight">1</property>
+                  <property type="row" id="0" name="weight">2</property>
+                  <property type="row" id="1" name="weight">0</property>
                 </layout>
               </object>
             </child>
@@ -878,31 +849,25 @@ line 2</property>
             <property name="height">200</property>
             <property name="padding">0 4 0 0</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
               <property name="sticky">ew</property>
-              <rows>
-                <row id="0">
-                  <property name="weight">1</property>
-                </row>
-              </rows>
-              <columns>
-                <column id="0">
-                  <property name="weight">1</property>
-                </column>
-              </columns>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="0" name="weight">1</property>
             </layout>
             <child>
               <object class="ttk.Button" id="task_cancel">
-                <property name="command">on_task_dialog_cancel</property>
+                <property name="command" type="command" cbtype="simple" args="">on_task_dialog_cancel</property>
                 <property name="text" translatable="yes">Cancel</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
                   <property name="sticky">e</property>
+                  <property type="col" id="0" name="weight">1</property>
+                  <property type="row" id="0" name="weight">1</property>
                 </layout>
               </object>
             </child>
@@ -920,7 +885,7 @@ line 2</property>
         <property name="height">200</property>
         <property name="padding">2</property>
         <property name="width">200</property>
-        <layout>
+        <layout manager="grid">
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
@@ -928,7 +893,7 @@ line 2</property>
         <child>
           <object class="ttk.Label" id="Label_9">
             <property name="text" translatable="yes">Copy to folder:</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
@@ -940,7 +905,7 @@ line 2</property>
           <object class="pygubu.builder.widgets.pathchooserinput" id="copyto_path">
             <property name="textvariable">string:copyto_path</property>
             <property name="type">directory</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
@@ -953,38 +918,35 @@ line 2</property>
             <property name="height">200</property>
             <property name="padding">0 5 0 0</property>
             <property name="width">200</property>
-            <layout>
+            <layout manager="grid">
               <property name="column">0</property>
               <property name="columnspan">2</property>
               <property name="propagate">True</property>
               <property name="row">2</property>
               <property name="rowspan">1</property>
               <property name="sticky">e</property>
-              <columns>
-                <column id="0">
-                  <property name="pad">10</property>
-                </column>
-              </columns>
             </layout>
             <child>
               <object class="ttk.Button" id="Button_4">
-                <property name="command">on_copyto_cancel</property>
+                <property name="command" type="command" cbtype="simple" args="">on_copyto_cancel</property>
                 <property name="text" translatable="yes">Cancel</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="pad">10</property>
                 </layout>
               </object>
             </child>
             <child>
               <object class="ttk.Button" id="Button_5">
-                <property name="command">on_copyto_ok</property>
+                <property name="command" type="command" cbtype="simple" args="">on_copyto_ok</property>
                 <property name="text" translatable="yes">Ok</property>
-                <layout>
+                <layout manager="grid">
                   <property name="column">1</property>
                   <property name="propagate">True</property>
                   <property name="row">0</property>
+                  <property type="col" id="0" name="pad">10</property>
                 </layout>
               </object>
             </child>
